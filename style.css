@@ -60,6 +60,7 @@ button:active{
     color: white;
     border-radius: 10px;
     border: none;
+    width: -webkit-fill-available;
 }
 
 .sticker__text:hover {

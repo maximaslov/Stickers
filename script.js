@@ -1,22 +1,18 @@
-'use strict'
-
 import StickersApi from './StickersApi.js';
 
 const DEL_BTN_CLASS = 'stickers__del';
 
-const stickersPlace = document.querySelector('.stickers');
-const createStickBtn = document.querySelector('.button');
+const $stickersPlace = $('.stickers');
+const $createStickBtn = $('.button');
 
-createStickBtn.addEventListener('click', onCreateStickBtn);
-// $createStickBtn.click(onCreateStickBtn)
-stickersPlace.addEventListener('focusout', addTextToStickerApi);
-stickersPlace.addEventListener('click', onDelBtnClick);
+$createStickBtn.on('click', onCreateStickBtn);
+$stickersPlace.on('focusout', addTextToStickerApi);
+$stickersPlace.on('click','.'+ DEL_BTN_CLASS, onDelBtnClick);
 
 StickersApi.request('')
     .then(stickers => stickers.map(e => {
         const sticker = e;
-        createSticker(sticker);
-        addStickerToHtml(sticker, stickersPlace, createSticker)
+        addStickerToHtml(sticker, $stickersPlace, createSticker)
     }))
     .catch(error => alert(error.message));
 
@@ -24,7 +20,7 @@ function onCreateStickBtn() {
     const sticker = getSticker()
     StickersApi.request('', 'POST', sticker)
         .then(res => {
-            addStickerToHtml(res, stickersPlace, createSticker);
+            addStickerToHtml(res, $stickersPlace, createSticker);
         });
 }
 
@@ -35,9 +31,9 @@ function getSticker() {
 }
 
 function addTextToStickerApi(e) {
-    const elem = e.target;
-    const id = elem.dataset.id;
-    const description = elem.value;
+    const $elem = $(e.target);
+    const id = $elem.data('id');
+    const description = $elem.val();
     
     putTextToAPI(id, description) 
 }
@@ -47,12 +43,10 @@ function putTextToAPI(id, description) {
 }
 
 function onDelBtnClick(e) {
-    const delBtn = e.target;
-    if (delBtn.classList.contains(DEL_BTN_CLASS)) {
-        const id = delBtn.nextElementSibling.dataset.id;
+    const $delBtn = $(e.target);
+    const id = $delBtn.next().data('id');
         deleteSticker(id);
-        delBtn.parentElement.remove();
-    }
+        $delBtn.parent().remove();
 }
 
 function deleteSticker(id) {
@@ -72,5 +66,5 @@ function createSticker(sticker) {
 }
 
 function addStickerToHtml(element, place, fn) {
-    place.insertAdjacentHTML('afterbegin' , fn(element))
+    place.append(fn(element));
 }

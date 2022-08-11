@@ -34,6 +34,4 @@ class StickersApi {
     }
 }
 
-    
-
 export default StickersApi;
